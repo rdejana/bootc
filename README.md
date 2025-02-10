@@ -9,7 +9,6 @@ This repo will be MacOS on Apple Silicon centric and use the following software 
 
 In addition, access to an image registry (e.g. quay.io) is required.
 
-
 ## Installation
 TBD
 
@@ -69,22 +68,39 @@ Now let's make sure that our "secret" is set:
 
 And you should see `hello world`.
 
-Now let's run the command, `echo 'another secret' | sudo /etc/newsecret >> /dev/null`.
+Now imagine that we need to added the wrong value for the secret.  Let's go back and edit the Containerfile change the value.
 
-You can see that this new file was created and its contents are `another secret`.  
+```Dockerfile
+FROM quay.io/fedora/fedora-bootc:41
+# create a simple "secret"
+RUN echo 'this is the right secret' > /etc/mysecret
+```
 
-Let's now reboot the VM with the command `sudo reboot`
+Now rebuild the image using the same process as before.  When the build is complete, push the image into your registry.
 
-After it restarts, you will be able to log in with your updated password and see that `/etc/newsecret` is still there.
+After the new image is push, switch back to the VM and run the command:
+```bash
+sudo bootc update
+```
+You should see new layers being downloaded.  Once they are downloaded, run:
+```bash
+sudo bootc status
+```
+and you'll see output similar to the following that indicates that a new version is staged.
 
--- update secret
+Reboot the VM with the command `sudo reboot`
 
--- rebuild image, let's use the config.json file this time.
+When the VM restarts, log in with your new password (not `changeit`) and verify that the secret has been updated.
 
--- update VM
+You may be asking, 'Why did the password change stick if this is an image based VM?' and that is a good question.
 
--- talk about file system
+With bootable containers, the `/etc` directory is mutable by default.  Changes to contents of `/etc` in a container images, any added, update, or removed files, will be applied on upgrade, locally modified files "win" and are no updated.
 
--- move to example 2
+The directory `/var/` is also locally mutable and is used for logs, home directories, container images, and host application state.  
+
+See https://docs.fedoraproject.org/en-US/bootc/filesystem/ for additional details.
+
+
+Congratulations, you've built and upgraded your first bootable container VM.
 
 
