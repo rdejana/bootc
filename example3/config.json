@@ -1,0 +1,16 @@
+{
+  "customizations": {
+    "user": [
+      {
+        "name": "demo",
+        "password": "changeit",
+        "groups": [
+          "wheel"
+        ]
+      }
+    ],
+    "kernel": {
+      "append": "audit=0"
+    }
+  }
+}

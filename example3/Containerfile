@@ -1,0 +1,27 @@
+FROM quay.io/fedora/fedora-bootc:42
+ENV APP_VERSION=1.0.0
+
+
+# COPY etc/ /etc/
+RUN dnf -y install open-vm-tools && \
+    dnf clean all && \
+    systemctl enable vmtoolsd.service
+
+RUN dnf -y install gpm && \
+    dnf clean all && \
+    systemctl enable gpm
+
+# Install Apache and PHP
+RUN  dnf install -y httpd php && dnf clean all
+
+# Set Apache to start on boot
+RUN systemctl enable httpd
+
+# See notes from https://gitlab.com/fedora/bootc/examples/-/blob/main/httpd/Containerfile
+# We want web content to come from our image not from /var which is machine-specific
+# and able to be modified.  We put contents into /usr which is readonly
+RUN mv /var/www /usr/share/www && \
+    sed -ie 's,/var/www,/usr/share/www,' /etc/httpd/conf/httpd.conf
+
+# Setup a simple home page with the version of the container in the header
+RUN echo "<h1>Welcome to bootc / image mode $APP_VERSION</h1> <?php phpinfo(); ?>" >> /usr/share/www/html/index.php
