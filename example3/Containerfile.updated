@@ -2,7 +2,7 @@
 # and https://gitlab.com/fedora/bootc/examples/-/tree/main/vmware?ref_type=heads
 
 FROM quay.io/fedora/fedora-bootc:42
-ENV APP_VERSION=1.0.0
+ENV APP_VERSION=1.0.1
 
 # install VMWare tools.
 COPY etc/ /etc/

@@ -21,4 +21,4 @@ TBD
 ## Examples
 - [Example1](example1/README.md) - Build your first bootable container based VM.
 - [Example2](example2/README.md) - Build a bootable container from the CLI.
-
+- [Example3](example3/README.md) - Build a bootable container with an HTTP application and VMWare tools installed.
